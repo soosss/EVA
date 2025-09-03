@@ -79,3 +79,5 @@ crash_log.txt
 # Temporary files
 *.tmp
 *.temp
+demo_test.py
+main_menu_screenshot.png
