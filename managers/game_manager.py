@@ -474,3 +474,50 @@ class GameManager:
         print(f"Relationships: {self.relationships}")
         print(f"Story Flags: {self.story_flags}")
         print("========================")
+    
+    def get_player_data(self):
+        """Get comprehensive player data object for save/load operations"""
+        class PlayerData:
+            def __init__(self, game_manager):
+                self.level = game_manager.player_stats['level']
+                self.experience = game_manager.player_stats['experience']
+                self.sync_ratio = game_manager.player_stats['sync_ratio']
+                self.health = game_manager.player_stats['health']
+                self.stress_level = game_manager.player_stats['stress_level']
+                self.current_mood = game_manager.player_stats['mood']
+                self.relationships = game_manager.relationships.copy()
+                self.inventory = game_manager.inventory['items'].copy()
+                self.story_flags = game_manager.story_flags.copy()
+                self.position = [400, 300]  # Default position
+                self.battles_won = 0  # Could be tracked separately
+                self.missions_completed = 0  # Could be tracked separately
+                self.playtime = "00:00:00"  # Could be tracked separately
+                self.total_playtime = 0  # Could be tracked separately
+                self.scenes_visited = []  # Could be tracked separately
+                self.choices_made = {}  # Could be tracked separately
+        
+        return PlayerData(self)
+    
+    def update(self, dt):
+        """Update game manager (called every frame)"""
+        # Update time tracking
+        self.advance_time(0)  # Just update internal time without advancing game time
+        
+        # Could add other periodic updates here like:
+        # - Auto-save timer
+        # - Achievement checks
+        # - Status effects
+        pass
+    
+    def cleanup(self):
+        """Clean up game manager resources"""
+        # Save any pending data
+        if hasattr(self, 'auto_save_enabled') and self.auto_save_enabled:
+            try:
+                self.auto_save()
+            except Exception as e:
+                print(f"⚠️ Auto-save during cleanup failed: {e}")
+        
+        # Reset state
+        self.game_running = False
+        print("🧹 Game Manager cleaned up")

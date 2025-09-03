@@ -114,7 +114,7 @@ class SceneManager:
         """Handle events with pause menu integration"""
         # Global pause key (only if pause menu is available)
         if (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and 
-            PauseMenu and not isinstance(self.current_scene, (type(None)))):
+            PauseMenu and self.current_scene is not None):
             
             # Check if current scene allows pausing
             scene_name = self.current_scene.__class__.__name__
