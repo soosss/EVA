@@ -171,7 +171,7 @@ class MainMenuScene:
         """Render individual menu option"""
         is_selected = index == self.selected_option
         
-        # Position
+        # Position - Better vertical centering
         option_y = self.menu_y + (index - len(self.menu_options) // 2) * self.option_spacing
         
         # Colors and effects
@@ -195,9 +195,3 @@ class MainMenuScene:
             pygame.draw.rect(screen, COLORS['SCHOOL_YELLOW'], highlight_rect, 2)
         
         screen.blit(text_surface, text_rect)
-
-
-# Backward compatibility
-class MainMenuScene(MainMenuScene):
-    """Ensure proper class name"""
-    pass

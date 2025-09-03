@@ -40,7 +40,7 @@ SAVE_PATH = "saves"
 DATA_PATH = "data"
 
 # === PLAYER SETTINGS ===
-PLAYER_SPEED = 180
+PLAYER_SPEED = 250  # Increased from 180 for smoother gameplay
 PLAYER_SIZE = (20, 30)
 
 # === PLAYER START VALUES ===

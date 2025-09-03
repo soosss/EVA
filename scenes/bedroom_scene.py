@@ -68,14 +68,18 @@ class BedroomScene:
         self.conversation_partner = None
         self.dialogue_index = 0
         
-        # Asuka conversation
+        # Asuka conversation - Enhanced from dialogue editor
         self.asuka_dialogues = [
-            "Asuka: What are you staring at, dummy?",
-            "Asuka: We have training today, don't forget!",
-            "Asuka: Try not to embarrass yourself this time."
+            "Asuka: Hey! Third Child! Wake up already!",
+            "Asuka: We're supposed to be at NERV in 30 minutes!",
+            "Asuka: Misato's waiting and you know how she gets...",
+            "Asuka: Come ON! Get out of bed!"
         ]
         
         print("🏠 Bedroom Scene initialized")
+        
+        # Start Asuka conversation automatically on scene initialization
+        self._start_asuka_conversation()
     
     def handle_event(self, event):
         """Handle bedroom events"""
