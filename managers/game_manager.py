@@ -11,20 +11,9 @@ import os
 from datetime import datetime
 
 # Add proper imports for screen dimensions and config
-try:
-    from config import (COLORS, SCREEN_WIDTH, SCREEN_HEIGHT, 
-                       PLAYER_START_HEALTH, PLAYER_START_SYNC_RATIO, 
-                       PLAYER_START_STRESS, PLAYER_START_RELATIONSHIPS)
-except ImportError:
-    from config import COLORS
-    SCREEN_WIDTH = 800
-    SCREEN_HEIGHT = 600
-    PLAYER_START_HEALTH = 100
-    PLAYER_START_SYNC_RATIO = 50.0
-    PLAYER_START_STRESS = 30
-    PLAYER_START_RELATIONSHIPS = {
-        "Asuka": 30, "Rei": 20, "Misato": 50, "Gendo": 10, "Shinji": 40
-    }
+from config import (COLORS, SCREEN_WIDTH, SCREEN_HEIGHT, 
+                    PLAYER_START_HEALTH, PLAYER_START_SYNC_RATIO, 
+                    PLAYER_START_STRESS, PLAYER_START_RELATIONSHIPS)
 
 class GameManager:
     """

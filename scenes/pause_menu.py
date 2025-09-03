@@ -131,13 +131,22 @@ class PauseMenu:
         
         # === INITIALIZATION ===
         os.makedirs(self.saves_directory, exist_ok=True)
+        self.available_saves = []
+        self.saves_cache_time = 0  # Track when saves were last scanned
+        self.saves_cache_ttl = 5.0  # Cache for 5 seconds
         self._scan_available_saves()
         self.game_manager.pause_game()
         
         print("⏸️ Complete Pause Menu initialized with all features")
     
-    def _scan_available_saves(self):
-        """Scan for available save files"""
+    def _scan_available_saves(self, force_refresh=False):
+        """Scan for available save files with caching"""
+        current_time = time.time()
+        
+        # Use cache if it's still fresh and not forced refresh
+        if not force_refresh and (current_time - self.saves_cache_time) < self.saves_cache_ttl:
+            return
+        
         self.available_saves = []
         
         for slot in range(self.save_slots):
@@ -174,6 +183,7 @@ class PauseMenu:
             
             self.available_saves.append(save_info)
         
+        self.saves_cache_time = current_time
         print(f"💾 Found {sum(1 for save in self.available_saves if save['exists'])} save files")
     
     def handle_event(self, event):
@@ -408,8 +418,8 @@ class PauseMenu:
             print(f"💾 Game saved to slot {slot + 1}")
             self._show_save_confirmation(slot)
             
-            # Refresh save list
-            self._scan_available_saves()
+            # Refresh save list (force refresh after save)
+            self._scan_available_saves(force_refresh=True)
             
             # Close submenu after successful save
             self.in_submenu = False

@@ -1,0 +1,31 @@
+{
+    "character": "Misato Katsuragi",
+    "scene": "nerv_arrival",
+    "mood": "serious",
+    "dialogues": [
+        {
+            "id": "briefing_1",
+            "text": "Good, you're both here. We have a situation.",
+            "conditions": {},
+            "effects": {
+                "tension": 10
+            }
+        },
+        {
+            "id": "briefing_2",
+            "text": "Shinji, your sync rates have been improving, but we need to accelerate your training.",
+            "conditions": {},
+            "effects": {
+                "confidence": 5
+            }
+        },
+        {
+            "id": "briefing_3",
+            "text": "You'll be running combat simulations to master EVA Unit-01's systems.",
+            "conditions": {},
+            "effects": {
+                "mission_unlocked": "tutorial_battle"
+            }
+        }
+    ]
+}

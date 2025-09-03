@@ -10,12 +10,7 @@ import json
 import os
 
 # Add proper imports for screen dimensions
-try:
-    from config import COLORS, SCREEN_WIDTH, SCREEN_HEIGHT
-except ImportError:
-    from config import COLORS
-    SCREEN_WIDTH = 800
-    SCREEN_HEIGHT = 600
+from config import COLORS, SCREEN_WIDTH, SCREEN_HEIGHT
 
 class SettingsManager:
     """Complete settings management system"""

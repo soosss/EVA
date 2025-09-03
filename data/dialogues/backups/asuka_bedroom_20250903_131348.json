@@ -1,0 +1,67 @@
+{
+    "character": "Asuka Langley Soryu",
+    "scene": "bedroom",
+    "mood": "energetic",
+    "dialogues": [
+        {
+            "id": "wake_up_1",
+            "text": "Hey! Third Child! Wake up already!",
+            "conditions": {},
+            "effects": {
+                "mood": "annoyed"
+            }
+        },
+        {
+            "id": "wake_up_2",
+            "text": "We're supposed to be at NERV in 30 minutes!",
+            "conditions": {},
+            "effects": {
+                "stress": 5
+            }
+        },
+        {
+            "id": "wake_up_3",
+            "text": "Misato's waiting and you know how she gets...",
+            "conditions": {},
+            "effects": {}
+        },
+        {
+            "id": "wake_up_4",
+            "text": "Come ON! Get out of bed!",
+            "conditions": {},
+            "effects": {
+                "mood": "determined"
+            }
+        }
+    ],
+    "interaction_options": [
+        {
+            "text": "I'm ready to go to NERV.",
+            "response": "Finally! Let's get going!",
+            "effects": {
+                "advance_story": true
+            }
+        },
+        {
+            "text": "What's the emergency about?",
+            "response": "Something about Angel detection. Misato will explain!",
+            "effects": {
+                "info_gained": "angel_threat"
+            }
+        },
+        {
+            "text": "Can I get dressed first?",
+            "response": "Make it quick! We're already late!",
+            "effects": {
+                "time_pressure": true
+            }
+        },
+        {
+            "text": "Why are you in my room?",
+            "response": "Misato sent me! Now stop asking questions and move!",
+            "effects": {
+                "mood": "irritated"
+            }
+        }
+    ]
+}
