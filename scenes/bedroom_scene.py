@@ -218,12 +218,17 @@ class BedroomScene:
     
     def render(self, screen):
         """Render bedroom scene"""
-        # Background
-        screen.fill((60, 45, 35))
+        # Calculate HUD area to avoid rendering game content behind it
+        hud_start_x = SCREEN_WIDTH - 220 - 10  # Match HUD positioning
+        playable_width = hud_start_x
+        
+        # Background - only fill the playable area
+        background_rect = pygame.Rect(0, 0, playable_width, SCREEN_HEIGHT)
+        pygame.draw.rect(screen, (60, 45, 35), background_rect)
         
         # Simple room elements
-        # Floor
-        floor_rect = pygame.Rect(0, SCREEN_HEIGHT - 100, SCREEN_WIDTH, 100)
+        # Floor - constrained to playable area
+        floor_rect = pygame.Rect(0, SCREEN_HEIGHT - 100, playable_width, 100)
         pygame.draw.rect(screen, (80, 60, 45), floor_rect)
         
         # Window
@@ -297,8 +302,11 @@ class BedroomScene:
     
     def _render_conversation(self, screen):
         """Render conversation interface"""
-        # Conversation background
-        conv_rect = pygame.Rect(50, SCREEN_HEIGHT - 150, SCREEN_WIDTH - 100, 120)
+        # Conversation background - adjusted to avoid HUD overlap
+        # HUD starts at SCREEN_WIDTH - 220 - 10 = 570, so conversation should end before that
+        hud_start_x = SCREEN_WIDTH - 220 - 10  # Match HUD positioning from ui/hud.py
+        conv_width = hud_start_x - 50 - 20  # Leave 20px margin from HUD
+        conv_rect = pygame.Rect(50, SCREEN_HEIGHT - 150, conv_width, 120)
         
         # Create conversation surface with alpha
         conv_surface = pygame.Surface((conv_rect.width, conv_rect.height), pygame.SRCALPHA)

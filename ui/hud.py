@@ -189,10 +189,13 @@ class EnhancedHUD:
         # === MAIN HUD BACKGROUND ===
         hud_rect = pygame.Rect(self.hud_x, self.hud_y, self.hud_width, self.hud_height)
         
-        # Background with transparency
+        # Background with enhanced visual separation
         hud_surface = pygame.Surface((self.hud_width, self.hud_height), pygame.SRCALPHA)
-        pygame.draw.rect(hud_surface, (15, 15, 25, 220), hud_surface.get_rect())
-        pygame.draw.rect(hud_surface, COLORS['NERV_RED'], hud_surface.get_rect(), 2)
+        # More opaque background to clearly separate from game area
+        pygame.draw.rect(hud_surface, (20, 20, 35, 240), hud_surface.get_rect())
+        # Double border for better separation
+        pygame.draw.rect(hud_surface, COLORS['NERV_RED'], hud_surface.get_rect(), 3)
+        pygame.draw.rect(hud_surface, (100, 100, 120), hud_surface.get_rect(), 1)
         screen.blit(hud_surface, (self.hud_x, self.hud_y))
         
         # === HUD TITLE ===
