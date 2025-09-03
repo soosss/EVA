@@ -1,0 +1,9 @@
+[godot]
+config_version=4
+
+[application]
+config/name="EVA"
+config/description="A Neon Genesis Evangelion themed JRPG"
+config/author="soosss"
+config/version="0.1"
+config/main_scene="res://scenes/main_hub.tscn"
