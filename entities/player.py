@@ -382,6 +382,26 @@ class EnhancedPlayer:
         self.velocity_x = 0
         self.velocity_y = 0
         self.moving = False
+    
+    def move_to_position(self, target_x, target_y, dt):
+        """Move player toward target position (for mouse movement)"""
+        # Calculate distance to target
+        dx = target_x - self.x
+        dy = target_y - self.y
+        distance = math.sqrt(dx*dx + dy*dy)
+        
+        # Check if we've reached the target
+        if distance < 5.0:  # Close enough threshold
+            return True
+        
+        # Normalize direction and apply movement
+        if distance > 0:
+            move_dx = (dx / distance) 
+            move_dy = (dy / distance)
+            self._apply_movement(move_dx, move_dy, dt)
+            self.moving = True
+        
+        return False
 
 
 # Backward compatibility - create alias for any existing code

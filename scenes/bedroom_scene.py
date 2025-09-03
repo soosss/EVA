@@ -31,6 +31,12 @@ except ImportError:
     print("⚠️ StatusSystem not available, using fallback")
     StatusSystem = None
 
+try:
+    from input.mouse_controller import MouseController
+except ImportError:
+    print("⚠️ MouseController not available, using fallback")
+    MouseController = None
+
 class BedroomScene:
     def __init__(self, game_manager, scene_manager):
         self.game_manager = game_manager
@@ -40,6 +46,11 @@ class BedroomScene:
         self.enhanced_hud = EnhancedHUD(game_manager) if EnhancedHUD else None
         self.enhanced_player = EnhancedPlayer(400, 300, game_manager) if EnhancedPlayer else None
         self.status_system = StatusSystem() if StatusSystem else None
+        
+        # Mouse Controller
+        self.mouse_controller = MouseController(game_manager) if MouseController else None
+        if self.mouse_controller:
+            self.mouse_controller.set_combat_mode(False)  # Normal movement mode
         
         # Basic player fallback
         if not self.enhanced_player:
@@ -76,6 +87,13 @@ class BedroomScene:
             "Asuka: Come ON! Get out of bed!"
         ]
         
+        # Asuka visual representation
+        self.asuka_present = False
+        self.asuka_x = 100
+        self.asuka_y = 150
+        self.asuka_width = 25
+        self.asuka_height = 35
+        
         print("🏠 Bedroom Scene initialized")
         
         # Start Asuka conversation automatically on scene initialization
@@ -83,6 +101,10 @@ class BedroomScene:
     
     def handle_event(self, event):
         """Handle bedroom events"""
+        # Always pass mouse events to mouse controller (even during conversation for movement)
+        if self.mouse_controller:
+            self.mouse_controller.handle_event(event, self)
+        
         if self.in_conversation:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
@@ -152,6 +174,7 @@ class BedroomScene:
         self.in_conversation = True
         self.conversation_partner = "Asuka"
         self.dialogue_index = 0
+        self.asuka_present = True  # Make Asuka visible
         if self.status_system:
             self.status_system.add_message("Asuka appears in the doorway", "info")
     
@@ -173,6 +196,13 @@ class BedroomScene:
     
     def update(self, dt):
         """Update bedroom scene"""
+        # Update mouse controller
+        if self.mouse_controller:
+            self.mouse_controller.update(dt)
+            # Update player movement from mouse clicks
+            if self.enhanced_player:
+                self.mouse_controller.update_player_movement(self.enhanced_player, dt)
+        
         # Update enhanced systems
         if self.enhanced_player:
             self.enhanced_player.update(dt)
@@ -188,12 +218,17 @@ class BedroomScene:
     
     def render(self, screen):
         """Render bedroom scene"""
-        # Background
-        screen.fill((60, 45, 35))
+        # Calculate HUD area to avoid rendering game content behind it
+        hud_start_x = SCREEN_WIDTH - 220 - 10  # Match HUD positioning
+        playable_width = hud_start_x
+        
+        # Background - only fill the playable area
+        background_rect = pygame.Rect(0, 0, playable_width, SCREEN_HEIGHT)
+        pygame.draw.rect(screen, (60, 45, 35), background_rect)
         
         # Simple room elements
-        # Floor
-        floor_rect = pygame.Rect(0, SCREEN_HEIGHT - 100, SCREEN_WIDTH, 100)
+        # Floor - constrained to playable area
+        floor_rect = pygame.Rect(0, SCREEN_HEIGHT - 100, playable_width, 100)
         pygame.draw.rect(screen, (80, 60, 45), floor_rect)
         
         # Window
@@ -204,6 +239,10 @@ class BedroomScene:
         # Interactive objects
         self._render_interactive_objects(screen)
         
+        # Render Asuka if present
+        if self.asuka_present:
+            self._render_asuka(screen)
+        
         # Enhanced player or basic fallback
         if self.enhanced_player:
             self.enhanced_player.render(screen)
@@ -212,6 +251,10 @@ class BedroomScene:
             player_rect = pygame.Rect(self.player_x - 10, self.player_y - 15, 20, 30)
             pygame.draw.rect(screen, COLORS['EVA_PURPLE'], player_rect)
             pygame.draw.rect(screen, COLORS['TEXT_WHITE'], player_rect, 2)
+        
+        # Mouse controller visual effects
+        if self.mouse_controller:
+            self.mouse_controller.render_mouse_ui(screen)
         
         # Conversation overlay
         if self.in_conversation:
@@ -238,10 +281,32 @@ class BedroomScene:
             text_rect = text.get_rect(center=(obj_rect.centerx, obj_rect.top - 10))
             screen.blit(text, text_rect)
     
+    def _render_asuka(self, screen):
+        """Render Asuka character"""
+        # Asuka body (simplified representation)
+        asuka_rect = pygame.Rect(self.asuka_x, self.asuka_y, self.asuka_width, self.asuka_height)
+        
+        # Body color (orange/red for Asuka's plugsuit)
+        pygame.draw.rect(screen, COLORS['WARNING_ORANGE'], asuka_rect)
+        pygame.draw.rect(screen, COLORS['NERV_RED'], asuka_rect, 2)
+        
+        # Hair (blonde/orange)
+        hair_rect = pygame.Rect(self.asuka_x - 3, self.asuka_y - 8, self.asuka_width + 6, 10)
+        pygame.draw.rect(screen, (255, 200, 100), hair_rect)
+        
+        # Name label
+        font = pygame.font.Font(None, 16)
+        name_text = font.render("Asuka", True, COLORS['TEXT_WHITE'])
+        name_rect = name_text.get_rect(center=(self.asuka_x + self.asuka_width//2, self.asuka_y - 15))
+        screen.blit(name_text, name_rect)
+    
     def _render_conversation(self, screen):
         """Render conversation interface"""
-        # Conversation background
-        conv_rect = pygame.Rect(50, SCREEN_HEIGHT - 150, SCREEN_WIDTH - 100, 120)
+        # Conversation background - adjusted to avoid HUD overlap
+        # HUD starts at SCREEN_WIDTH - 220 - 10 = 570, so conversation should end before that
+        hud_start_x = SCREEN_WIDTH - 220 - 10  # Match HUD positioning from ui/hud.py
+        conv_width = hud_start_x - 50 - 20  # Leave 20px margin from HUD
+        conv_rect = pygame.Rect(50, SCREEN_HEIGHT - 150, conv_width, 120)
         
         # Create conversation surface with alpha
         conv_surface = pygame.Surface((conv_rect.width, conv_rect.height), pygame.SRCALPHA)
