@@ -42,6 +42,8 @@ class SceneManager:
         self.current_scene = None
         self.scene_stack = []
         
+        print(f"🎬 Scene Manager initializing with game_manager: {game_manager is not None}")
+        
         # === SCENE REGISTRY ===
         self.scene_classes = {
             # Core gameplay scenes
@@ -177,7 +179,11 @@ class SceneManager:
     def get_current_scene_name(self):
         """Get current scene name"""
         if self.current_scene:
-            return self.current_scene.__class__.__name__
+            try:
+                return self.current_scene.__class__.__name__
+            except AttributeError:
+                print("⚠️ Current scene has no __class__ attribute")
+                return "Unknown"
         return "None"
     
     def cleanup(self):

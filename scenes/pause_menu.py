@@ -382,7 +382,7 @@ class PauseMenu:
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
                 "utc_timestamp": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()),
                 "playtime": player_data.playtime,
-                "current_scene": self.scene_manager.get_current_scene_name(),
+                "current_scene": self.game_manager.scene_manager.get_current_scene_name() if hasattr(self.game_manager, 'scene_manager') and self.game_manager.scene_manager else "Unknown",
                 "player_data": {
                     "level": player_data.level,
                     "experience": player_data.experience,
@@ -840,8 +840,8 @@ class PauseMenu:
         info_y = self.menu_y + self.menu_height - 80
         
         # Current scene and player info
-        if hasattr(self.game_manager, 'scene_manager'):
-            current_scene = self.scene_manager.get_current_scene_name()
+        if hasattr(self.game_manager, 'scene_manager') and self.game_manager.scene_manager:
+            current_scene = self.game_manager.scene_manager.get_current_scene_name()
             player_data = self.game_manager.get_player_data()
             
             info_lines = [

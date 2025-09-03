@@ -49,6 +49,10 @@ class GameEngine:
         self.game_manager = GameManager()
         self.scene_manager = SceneManager(self.game_manager)
         
+        # Link scene_manager to game_manager
+        self.game_manager.scene_manager = self.scene_manager
+        print("🔗 Scene manager linked to game manager")
+        
         # === START WITH MAIN MENU ===
         self.scene_manager.change_scene("main_menu")
         
