@@ -1,0 +1,43 @@
+{
+    "character": "Dr. Ritsuko Akagi",
+    "scene": "hub",
+    "mood": "analytical",
+    "dialogues": [
+        {
+            "id": "eva_data",
+            "text": "The EVA's performance data shows continuous improvement.",
+            "conditions": {},
+            "effects": {
+                "info_gained": "eva_performance"
+            }
+        },
+        {
+            "id": "at_field",
+            "text": "AT Field harmonics are stabilizing nicely.",
+            "conditions": {
+                "sync_ratio": ">30"
+            },
+            "effects": {
+                "technical_knowledge": 5
+            }
+        },
+        {
+            "id": "sync_tests",
+            "text": "We should review the sync test results.",
+            "conditions": {},
+            "effects": {
+                "sync_ratio": 2
+            }
+        },
+        {
+            "id": "upgrades",
+            "text": "The upgrade systems are ready for implementation.",
+            "conditions": {
+                "level": ">5"
+            },
+            "effects": {
+                "upgrade_available": true
+            }
+        }
+    ]
+}

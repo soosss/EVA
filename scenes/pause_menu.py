@@ -131,13 +131,22 @@ class PauseMenu:
         
         # === INITIALIZATION ===
         os.makedirs(self.saves_directory, exist_ok=True)
+        self.available_saves = []
+        self.saves_cache_time = 0  # Track when saves were last scanned
+        self.saves_cache_ttl = 5.0  # Cache for 5 seconds
         self._scan_available_saves()
         self.game_manager.pause_game()
         
         print("⏸️ Complete Pause Menu initialized with all features")
     
-    def _scan_available_saves(self):
-        """Scan for available save files"""
+    def _scan_available_saves(self, force_refresh=False):
+        """Scan for available save files with caching"""
+        current_time = time.time()
+        
+        # Use cache if it's still fresh and not forced refresh
+        if not force_refresh and (current_time - self.saves_cache_time) < self.saves_cache_ttl:
+            return
+        
         self.available_saves = []
         
         for slot in range(self.save_slots):
@@ -174,6 +183,7 @@ class PauseMenu:
             
             self.available_saves.append(save_info)
         
+        self.saves_cache_time = current_time
         print(f"💾 Found {sum(1 for save in self.available_saves if save['exists'])} save files")
     
     def handle_event(self, event):
@@ -370,22 +380,22 @@ class PauseMenu:
             save_data = {
                 "version": "1.0.0",
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
-                "utc_timestamp": "2025-09-03 05:54:51",
-                "playtime": getattr(player_data, 'playtime', "00:00:00"),
+                "utc_timestamp": time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()),
+                "playtime": player_data.playtime,
                 "current_scene": self.scene_manager.get_current_scene_name(),
                 "player_data": {
-                    "level": getattr(player_data, 'level', 1),
-                    "experience": getattr(player_data, 'experience', 0),
-                    "sync_ratio": getattr(player_data, 'sync_ratio', 50.0),
-                    "health": getattr(player_data, 'health', 100),
-                    "stress_level": getattr(player_data, 'stress_level', 30),
-                    "current_mood": getattr(player_data, 'current_mood', 'neutral'),
-                    "relationships": getattr(player_data, 'relationships', {}),
-                    "inventory": getattr(player_data, 'inventory', []),
-                    "story_flags": getattr(player_data, 'story_flags', {}),
-                    "position": getattr(player_data, 'position', [400, 300]),
-                    "battles_won": getattr(player_data, 'battles_won', 0),
-                    "missions_completed": getattr(player_data, 'missions_completed', 0)
+                    "level": player_data.level,
+                    "experience": player_data.experience,
+                    "sync_ratio": player_data.sync_ratio,
+                    "health": player_data.health,
+                    "stress_level": player_data.stress_level,
+                    "current_mood": player_data.current_mood,
+                    "relationships": player_data.relationships,
+                    "inventory": player_data.inventory,
+                    "story_flags": player_data.story_flags,
+                    "position": player_data.position,
+                    "battles_won": player_data.battles_won,
+                    "missions_completed": player_data.missions_completed
                 },
                 "story_progress": self.scene_manager.get_story_progress(),
                 "game_settings": {
@@ -393,9 +403,9 @@ class PauseMenu:
                     "auto_save": True
                 },
                 "statistics": {
-                    "total_playtime": getattr(player_data, 'total_playtime', 0),
-                    "scenes_visited": getattr(player_data, 'scenes_visited', []),
-                    "choices_made": getattr(player_data, 'choices_made', {}),
+                    "total_playtime": player_data.total_playtime,
+                    "scenes_visited": player_data.scenes_visited,
+                    "choices_made": player_data.choices_made,
                     "save_count": slot + 1
                 }
             }
@@ -408,8 +418,8 @@ class PauseMenu:
             print(f"💾 Game saved to slot {slot + 1}")
             self._show_save_confirmation(slot)
             
-            # Refresh save list
-            self._scan_available_saves()
+            # Refresh save list (force refresh after save)
+            self._scan_available_saves(force_refresh=True)
             
             # Close submenu after successful save
             self.in_submenu = False
